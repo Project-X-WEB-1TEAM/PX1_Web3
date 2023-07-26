@@ -1,4 +1,4 @@
-package Product;
+package product;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -6,9 +6,7 @@ import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class ProductInsert {
-
-
+public class ProductSearch {
     public static void main(String[] args) {
         Properties prop = new Properties();	
     	try {
@@ -24,30 +22,22 @@ public class ProductInsert {
 	            Scanner scanner = new Scanner(System.in);
 	            
 	            while (true) {
-		            // Get product information from the user
 		            System.out.print("Enter product name: ");
 		            String productName = scanner.nextLine();
 		
-		            System.out.print("Enter price: ");
-		            int price = scanner.nextInt();
-		            scanner.nextLine();
-		
-		            System.out.print("Enter quantity: ");
-		            int stock_quantity = scanner.nextInt();
-		            scanner.nextLine();
 		
 		            try (Connection connection = DriverManager.getConnection(url, username, password)) {
-		                String insertQuery = "INSERT INTO product (product_name, price, stock_quantity) VALUES (?, ?, ?)";
-		                try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
-		                    preparedStatement.setString(1, productName);
-		                    preparedStatement.setInt(2, price);
-		                    preparedStatement.setInt(3, stock_quantity);
-		
-		                    int rowsAffected = preparedStatement.executeUpdate();
-		                    if (rowsAffected > 0) {
-		                        System.out.println("삽입이 성공적으로 이뤄졌습니다. ");
-		                    } else {
-		                        System.out.println("삽입동작이 실패하였습니다.");
+		                String selectQuery = "SELECT * FROM product WHERE product_name LIKE ?";
+		                try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+		                    preparedStatement.setString(1, "%" + productName + "%");
+		                    ResultSet rs = preparedStatement.executeQuery();
+		                    
+		                    while (rs.next()) {
+		                        String productCode = rs.getString("product_code");
+		                        String productResultName = rs.getString("product_name");
+		                        int price = rs.getInt("price");
+		                        int stockQuantity = rs.getInt("stock_quantity");
+		                        System.out.println("상품코드: " + productCode + ", 상품명: " + productResultName + ", 가격: " + price + ", 재고수량: " + stockQuantity);
 		                    }
 		                }
 		            } catch (SQLException e) {

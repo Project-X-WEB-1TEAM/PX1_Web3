@@ -24,7 +24,7 @@ public class JdbcExample {
                     String product_name = rs.getString("product_name");
                     double price = rs.getDouble("price");
                     int stock_quantity = rs.getInt("stock_quantity");
-                    System.out.println("product_code: " + product_code 
+                    System.out.println("product_code: " + product_code
                     		+ ", product_name: " + product_name
                     		+ ", price: " + price
                     		+ ", stock_quantity: " + stock_quantity);
